@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import VehicleCard from "../components/vehicles/VehicleCard";
 import VehicleCardSkeleton from "../components/vehicles/VehicleCardSkeleton";
@@ -8,6 +8,81 @@ const Home = () => {
   const [featuredVehicles, setFeaturedVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const vantaRef = useRef(null);
+  const vantaEffect = useRef(null);
+
+  // Load Vanta Waves
+  useEffect(() => {
+    let threeScript;
+    let vantaScript;
+
+    const loadVanta = () => {
+      if (!window.VANTA || !vantaRef.current) return;
+
+      vantaEffect.current = window.VANTA.WAVES({
+        el: vantaRef.current,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        color: 0xaa701b,
+      });
+    };
+
+    // Load Three.js first
+    if (!window.THREE) {
+      threeScript = document.createElement("script");
+      threeScript.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
+      threeScript.async = true;
+
+      threeScript.onload = () => {
+        // Then load Vanta
+        vantaScript = document.createElement("script");
+        vantaScript.src =
+          "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js";
+        vantaScript.async = true;
+
+        vantaScript.onload = loadVanta;
+
+        document.body.appendChild(vantaScript);
+      };
+
+      document.body.appendChild(threeScript);
+    } else if (!window.VANTA) {
+      vantaScript = document.createElement("script");
+      vantaScript.src =
+        "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js";
+      vantaScript.async = true;
+
+      vantaScript.onload = loadVanta;
+
+      document.body.appendChild(vantaScript);
+    } else {
+      loadVanta();
+    }
+
+    // Cleanup Vanta when leaving page
+    return () => {
+      if (vantaEffect.current) {
+        vantaEffect.current.destroy();
+        vantaEffect.current = null;
+      }
+
+      if (threeScript) {
+        threeScript.remove();
+      }
+
+      if (vantaScript) {
+        vantaScript.remove();
+      }
+    };
+  }, []);
+
+  // Load featured vehicles
   useEffect(() => {
     import("../api/vehicleApi")
       .then(({ getFeaturedVehicles }) => {
@@ -30,22 +105,11 @@ const Home = () => {
 
   return (
     <AnimatedPage className="home-page">
-      {/* Orange Dot Background */}
-      <div className="relative min-h-screen bg-[#fff7ed] overflow-hidden">
-        {/* Background Pattern */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundColor: "#fff7ed",
-            backgroundImage: `
-              radial-gradient(#f97316 10%, transparent 10%),
-              radial-gradient(#f97316 10%, transparent 10%)
-            `,
-            backgroundSize: "100px 100px",
-            backgroundPosition: "0 0, 50px 50px",
-            opacity: 0.25,
-          }}
-        />
+      <div ref={vantaRef} className="relative min-h-screen overflow-hidden">
+        {/* Vanta Waves Background */}
+
+        {/* Existing background overlay */}
+        <div className="absolute inset-0 pointer-events-none bg-[#fff7ed]/30" />
 
         {/* Main Content */}
         <div className="relative z-10">
@@ -54,7 +118,7 @@ const Home = () => {
             className="text-white py-24 px-6 text-center bg-cover bg-center"
             style={{
               backgroundImage:
-                "linear-gradient(rgba(31, 41, 55, 0.9), rgba(31, 41, 55, 0.9)), url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1920&q=80)",
+                "linear-gradient(rgba(31, 41, 55, 0.85), rgba(31, 41, 55, 0.85)), url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1920&q=80)",
             }}
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-5">
