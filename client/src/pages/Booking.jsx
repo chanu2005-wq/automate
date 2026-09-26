@@ -36,9 +36,31 @@ const Booking = () => {
   if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>;
   if (!vehicle) return <div style={{ padding: '40px', textAlign: 'center' }}>Vehicle not found</div>;
 
-  const handleContinue = (e) => {
+  const handleContinue = async (e) => {
     e.preventDefault();
-    navigate('/checkout');
+    if (!dates.pickup || !dates.dropoff) {
+      alert("Please select dates");
+      return;
+    }
+    
+    try {
+      const { createBooking } = await import('../api/bookingApi');
+      const res = await createBooking({
+        vehicleId,
+        pickupLocation: "Main Office",
+        dropOffLocation: "Main Office",
+        pickupDateTime: dates.pickup,
+        returnDateTime: dates.dropoff
+      });
+      if (res.success && res.data?.booking?._id) {
+         navigate(`/checkout/${res.data.booking._id}`);
+      } else {
+         alert("Failed to create booking");
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to create booking");
+    }
   };
 
   return (
