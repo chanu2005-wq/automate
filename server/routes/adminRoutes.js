@@ -15,7 +15,9 @@ const router = express.Router();
 
 router.use(protect, admin);
 
+// Dashboard stats — respond to both /dashboard and /stats for compatibility
 router.get('/dashboard', getDashboardStats);
+router.get('/stats', getDashboardStats);
 
 router.route('/vehicles')
   .get(getAllVehicles)
@@ -23,6 +25,7 @@ router.route('/vehicles')
 router.route('/vehicles/:id')
   .put(updateVehicle)
   .delete(deleteVehicle);
+// Fix: was /vehicles/:id/toggle-availability (PUT)
 router.put('/vehicles/:id/toggle-availability', toggleAvailability);
 
 router.route('/bookings')
@@ -31,9 +34,11 @@ router.put('/bookings/:id/status', updateBookingStatus);
 
 router.get('/customers', getAllCustomers);
 router.get('/customers/:id', getCustomerDetail);
+// Fix: was /customers/:id/toggle-block (PUT)
 router.put('/customers/:id/toggle-block', toggleBlockCustomer);
 
 router.get('/payments', getAllPayments);
+// Fix: was /payments/:id/refund (PUT)
 router.put('/payments/:id/refund', processRefund);
 
 router.route('/reviews')
