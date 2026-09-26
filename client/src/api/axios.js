@@ -1,13 +1,18 @@
 import axios from 'axios';
 
 const isProd = import.meta.env.PROD;
-const fallbackUrl = isProd 
-  ? 'https://automate-server-backend-5cvz.onrender.com/api' 
-  : 'http://localhost:5001/api';
+const PRODUCTION_API_URL = 'https://automate-server-backend-5cvz.onrender.com/api';
 
-let apiURL = import.meta.env.VITE_API_URL || fallbackUrl;
-if (apiURL && !apiURL.endsWith('/api')) {
-  apiURL = `${apiURL.replace(/\/$/, '')}/api`;
+// In production builds, always use the production URL.
+// VITE_API_URL is only respected in development (local dev server).
+// This prevents the local .env VITE_API_URL=http://localhost:5001 from being
+// baked into the production bundle by Vite's static env replacement.
+let apiURL;
+if (isProd) {
+  apiURL = PRODUCTION_API_URL;
+} else {
+  const devUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+  apiURL = devUrl.endsWith('/api') ? devUrl : `${devUrl.replace(/\/$/, '')}/api`;
 }
 
 const API = axios.create({
