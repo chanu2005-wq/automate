@@ -1,7 +1,17 @@
 import axios from 'axios';
 
+const isProd = import.meta.env.PROD;
+const fallbackUrl = isProd 
+  ? 'https://automate-server-backend-5cvz.onrender.com/api' 
+  : 'http://localhost:5001/api';
+
+let apiURL = import.meta.env.VITE_API_URL || fallbackUrl;
+if (apiURL && !apiURL.endsWith('/api')) {
+  apiURL = `${apiURL.replace(/\/$/, '')}/api`;
+}
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: apiURL,
   withCredentials: true,
 });
 
