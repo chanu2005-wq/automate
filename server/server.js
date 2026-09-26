@@ -23,16 +23,52 @@ await connectDB();
 
 const app = express();
 
+// Allowed origins for CORS (localhost for dev, Vercel for production)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+  'https://automate-coral-nine.vercel.app',
+];
+
 // Middleware
 app.use(helmet());
 app.use(
   cors({
-    origin: "https://automate-coral-nine.vercel.app/",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      // Strip trailing slash for comparison
+      const normalizedOrigin = origin.replace(/\/$/, '');
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
+// Handle preflight requests for all routes
+app.options('*', cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(morgan("dev"));
 app.use(express.json());
+
+// Health check
+app.get('/health', (req, res) => res.json({ status: 'ok', env: process.env.NODE_ENV }));
 
 // Static folder for local uploads (fallback)
 app.use("/uploads", express.static("uploads"));

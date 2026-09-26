@@ -52,7 +52,10 @@ export const forgotPassword = async (req, res) => {
   const resetToken = user.generatePasswordReset();
   await user.save({ validateBeforeSave: false });
 
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+  const frontendUrl = process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL_PROD || process.env.FRONTEND_URL
+    : process.env.FRONTEND_URL;
+  const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
   const message = `You are receiving this email because you requested a password reset. Please make a PUT request to: \n\n ${resetUrl}`;
 
   try {
