@@ -6,7 +6,11 @@ import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
 
 export const register = async (req, res) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone } = req.body || {};
+  
+  if (!name || !email || !password) {
+    return sendError(res, 'Please provide name, email and password', 400);
+  }
   
   const userExists = await User.findOne({ email });
   if (userExists) return sendError(res, 'User already exists', 400);
@@ -26,7 +30,12 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  // Safe destructuring to prevent crashes if req.body is undefined
+  const { email, password } = req.body || {};
+
+  if (!email || !password) {
+    return sendError(res, 'Please provide an email and password', 400);
+  }
 
   const user = await User.findOne({ email }).select('+password');
   if (!user || !(await user.matchPassword(password))) {
@@ -46,7 +55,12 @@ export const logout = (req, res) => {
 };
 
 export const forgotPassword = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const { email } = req.body || {};
+  if (!email) {
+    return sendError(res, 'Please provide an email', 400);
+  }
+
+  const user = await User.findOne({ email });
   if (!user) return sendError(res, 'User not found', 404);
 
   const resetToken = user.generatePasswordReset();
@@ -70,6 +84,11 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
+  const { password } = req.body || {};
+  if (!password) {
+    return sendError(res, 'Please provide a new password', 400);
+  }
+
   const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
 
   const user = await User.findOne({
@@ -79,7 +98,7 @@ export const resetPassword = async (req, res) => {
 
   if (!user) return sendError(res, 'Invalid or expired token', 400);
 
-  user.password = req.body.password;
+  user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpires = undefined;
   await user.save();
