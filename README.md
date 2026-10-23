@@ -159,46 +159,13 @@ journey
 
 </div>
 
-```mermaid
-flowchart TB
-    USER(["Customer"])
-    ADMIN(["Administrator"])
+<div align="center">
 
-    subgraph CLIENT["01 / PRESENTATION LAYER"]
-        REACT["React 18 + Vite"]
-        ROUTER["React Router"]
-        AXIOS["Axios HTTP Client"]
-    end
+[![Architecture diagram of chanu2005-wq/automate](https://gitdiagram.com/chanu2005-wq/automate/diagram.png)](https://gitdiagram.com/chanu2005-wq/automate?utm_source=readme&utm_medium=picture)
 
-    subgraph SERVER["02 / APPLICATION LAYER"]
-        EXPRESS["Express.js API"]
-        JWT["JWT Authentication"]
-        CONTROLLERS["Controllers & Business Logic"]
-        MONGOOSE["Mongoose Models"]
-    end
+<sub>Architecture diagram generated from the repository by <a href="https://gitdiagram.com/chanu2005-wq/automate?utm_source=readme&utm_medium=picture">GitDiagram</a>. Click the image to explore it interactively.</sub>
 
-    DB[("03 / MongoDB")]
-
-    USER --> REACT
-    ADMIN --> REACT
-    REACT --> ROUTER
-    ROUTER --> AXIOS
-    AXIOS <-->|HTTP / JSON| EXPRESS
-    EXPRESS --> JWT
-    JWT --> CONTROLLERS
-    CONTROLLERS --> MONGOOSE
-    MONGOOSE <--> DB
-
-    classDef client fill:#071a30,stroke:#00e5ff,color:#ffffff
-    classDef server fill:#17112f,stroke:#a78bfa,color:#ffffff
-    classDef data fill:#08291f,stroke:#34d399,color:#ffffff
-
-    class REACT,ROUTER,AXIOS client
-    class EXPRESS,JWT,CONTROLLERS,MONGOOSE server
-    class DB data
-```
-
-<sub>Conceptual architecture based on the documented technology stack. Verify exact routes, middleware, and data relationships against the source code.</sub>
+</div>
 
 <img src="./assets/divider.svg" width="100%" height="6" alt="" />
 
