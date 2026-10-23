@@ -2,7 +2,13 @@
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/chanu2005-wq/automate/main/assets/banner.svg" alt="AutoMate banner" width="100%" />
+<a href="#top">
+  <img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Serif&weight=700&size=64&duration=3500&pause=2000&color=00E5FF&center=true&vCenter=true&repeat=true&width=620&height=110&lines=AutoMate" alt="AutoMate" />
+</a>
+
+<img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Serif&weight=500&size=18&duration=4000&pause=1500&color=A78BFA&center=true&vCenter=true&repeat=true&width=720&height=40&lines=DRIVE+YOUR+FREEDOM.;REDEFINE+YOUR+JOURNEY." alt="Drive your freedom. Redefine your journey." />
+
+**A Full-Stack Vehicle Rental Platform**
 
 <br/>
 
@@ -29,7 +35,7 @@
 
 </div>
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 <a id="overview"></a>
 
@@ -54,7 +60,7 @@ It pairs a modern **React** frontend with an **Express.js** backend and **MongoD
 
 </details>
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 <a id="features"></a>
 
@@ -147,7 +153,7 @@ journey
 
 <sub>Illustrative flow based on the documented features. Verify against the actual UI.</sub>
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 <a id="architecture"></a>
 
@@ -167,7 +173,7 @@ journey
 
 </div>
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 <a id="tech-stack"></a>
 
@@ -195,7 +201,7 @@ journey
 | Security | JWT | Token-based authentication |
 | Passwords | bcryptjs | Password hashing |
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 <a id="get-started"></a>
 
@@ -252,7 +258,7 @@ Open the local development URL displayed by Vite.
 > [!NOTE]
 > The commands above follow the supplied project instructions. Verify the configured backend port, API base URL, and required environment variables in your actual source files.
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 <a id="structure"></a>
 
@@ -260,9 +266,6 @@ Open the local development URL displayed by Vite.
 
 ```text
 automate/
-├── assets/
-│   ├── banner.svg
-│   └── divider.svg
 ├── client/
 │   ├── public/
 │   ├── src/
@@ -283,7 +286,7 @@ automate/
 
 <sub>Illustrative layout: update directory names to match the actual repository.</sub>
 
-<img src="./assets/divider.svg" width="100%" height="6" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=3" width="100%" height="3" alt="" />
 
 ## ◈ Security Principles
 
