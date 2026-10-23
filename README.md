@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="./assets/banner.svg" alt="AutoMate – animated banner of a car driving through a neon city" width="100%" />
+<img src="https://raw.githubusercontent.com/chanu2005-wq/automate/main/assets/banner.svg" alt="AutoMate banner" width="100%" />
 
 <br/>
 
