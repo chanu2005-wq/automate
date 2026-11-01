@@ -32,12 +32,62 @@ export const getAllVehicles = async (req, res) => {
 };
 
 export const createVehicle = async (req, res) => {
-  const vehicle = await Vehicle.create(req.body);
+  const {
+    brand, model, category, registrationNumber, fuelType, transmission,
+    seats, pricePerDay, location, availability, description, features
+  } = req.body;
+
+  if (!brand || !model || !category || !pricePerDay || !location) {
+    return sendError(res, 'Brand, model, category, price per day and location are required', 400);
+  }
+
+  const images = req.files?.map(f => f.path) || (req.body.images ? JSON.parse(req.body.images) : []);
+
+  const vehicle = await Vehicle.create({
+    brand, model, category, registrationNumber, fuelType, transmission,
+    seats: seats ? Number(seats) : undefined,
+    pricePerDay: Number(pricePerDay),
+    location,
+    availability: availability !== undefined ? availability === 'true' : true,
+    description,
+    features: features ? JSON.parse(features) : [],
+    images
+  });
+
   sendSuccess(res, 'Vehicle created', { vehicle }, 201);
 };
 
 export const updateVehicle = async (req, res) => {
-  const vehicle = await Vehicle.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const {
+    brand, model, category, registrationNumber, fuelType, transmission,
+    seats, pricePerDay, location, availability, description, features
+  } = req.body;
+
+  const updateData = {
+    brand, model, category, registrationNumber, fuelType, transmission,
+    seats: seats ? Number(seats) : undefined,
+    pricePerDay: pricePerDay ? Number(pricePerDay) : undefined,
+    location,
+    availability: availability !== undefined ? availability === 'true' : undefined,
+    description,
+    features: features ? JSON.parse(features) : undefined
+  };
+
+  // Remove undefined fields
+  Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+  // Handle uploaded images: append to existing images array
+  if (req.files && req.files.length > 0) {
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (vehicle) {
+      const existingImages = vehicle.images || [];
+      const newImages = req.files.map(f => f.path);
+      updateData.images = [...existingImages, ...newImages];
+    }
+  }
+
+  const vehicle = await Vehicle.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+  if (!vehicle) return sendError(res, 'Vehicle not found', 404);
   sendSuccess(res, 'Vehicle updated', { vehicle });
 };
 
@@ -48,6 +98,7 @@ export const deleteVehicle = async (req, res) => {
 
 export const toggleAvailability = async (req, res) => {
   const vehicle = await Vehicle.findById(req.params.id);
+  if (!vehicle) return sendError(res, 'Vehicle not found', 404);
   vehicle.availability = !vehicle.availability;
   await vehicle.save();
   sendSuccess(res, 'Vehicle availability toggled', { vehicle });
@@ -70,6 +121,7 @@ export const getAllCustomers = async (req, res) => {
 
 export const toggleBlockCustomer = async (req, res) => {
   const user = await User.findById(req.params.id);
+  if (!user) return sendError(res, 'Customer not found', 404);
   user.isBlocked = !user.isBlocked;
   await user.save();
   sendSuccess(res, 'Customer block status toggled', { user });
@@ -77,6 +129,7 @@ export const toggleBlockCustomer = async (req, res) => {
 
 export const getCustomerDetail = async (req, res) => {
   const user = await User.findById(req.params.id);
+  if (!user) return sendError(res, 'Customer not found', 404);
   sendSuccess(res, 'Customer detail fetched', { user });
 };
 
@@ -87,6 +140,7 @@ export const getAllPayments = async (req, res) => {
 
 export const processRefund = async (req, res) => {
   const payment = await Payment.findById(req.params.id);
+  if (!payment) return sendError(res, 'Payment not found', 404);
   payment.status = 'Refunded';
   payment.refundedAt = Date.now();
   await payment.save();

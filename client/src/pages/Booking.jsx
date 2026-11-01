@@ -14,7 +14,8 @@ const Booking = () => {
   React.useEffect(() => {
     import('../api/vehicleApi').then(({ getVehicle }) => {
       getVehicle(vehicleId).then(data => {
-        setVehicle(data.data || data);
+        const vehicleData = data?.data?.vehicle || data?.vehicle || {};
+        setVehicle(vehicleData);
         setLoading(false);
       }).catch(err => {
         console.error(err);

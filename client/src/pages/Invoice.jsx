@@ -8,20 +8,20 @@ const Invoice = () => {
 
   React.useEffect(() => {
     import('../api/bookingApi').then(({ getBooking }) => {
-      // In a real app we'd get the actual ID from params if routed properly
+      // Backend wraps as { success, message, data: { booking, payment } }
       getBooking(id).then(res => {
-        const data = res.data || res;
+        const booking = res?.data?.booking || res?.booking || {};
         setInvoice({
-          id: data._id,
+          id: booking._id,
           date: new Date().toLocaleDateString(),
-          customerName: data.user?.name || 'Customer',
-          vehicleName: `${data.vehicle?.brand} ${data.vehicle?.model}`,
-          rentalPeriod: `${new Date(data.pickupDateTime).toLocaleDateString()} - ${new Date(data.returnDateTime).toLocaleDateString()}`,
-          days: data.rentalDuration / 24, // Assuming rentalDuration is in hours
-          rate: data.vehicle?.pricePerDay || 0,
-          subtotal: data.baseAmount,
-          tax: data.additionalCharges || 0,
-          total: data.totalAmount
+          customerName: booking.user?.name || 'Customer',
+          vehicleName: `${booking.vehicle?.brand} ${booking.vehicle?.model}`,
+          rentalPeriod: `${new Date(booking.pickupDateTime).toLocaleDateString()} - ${new Date(booking.returnDateTime).toLocaleDateString()}`,
+          days: booking.rentalDays || 1,
+          rate: booking.vehicle?.pricePerDay || 0,
+          subtotal: booking.baseAmount,
+          tax: booking.additionalCharges || 0,
+          total: booking.totalAmount
         });
         setLoading(false);
       }).catch(err => {

@@ -12,7 +12,9 @@ const VehicleDetail = () => {
   React.useEffect(() => {
     import('../api/vehicleApi').then(({ getVehicle }) => {
       getVehicle(id).then(data => {
-        setVehicle(data.data || data);
+        // Backend wraps as { success, message, data: { vehicle, reviews } }
+        const vehicleData = data?.data?.vehicle || data?.vehicle || {};
+        setVehicle(vehicleData);
         setLoading(false);
       }).catch(err => {
         console.error(err);
@@ -50,7 +52,17 @@ const VehicleDetail = () => {
             Book Now
           </Link>
 
-          <VehicleSpecs specs={vehicle.specs} />
+          {vehicle && (
+            <VehicleSpecs
+              specs={{
+                seats: vehicle.seats,
+                transmission: vehicle.transmission,
+                fuelType: vehicle.fuelType,
+                mileage: vehicle.mileage,
+                engine: vehicle.engine,
+              }}
+            />
+          )}
         </div>
 
       </div>

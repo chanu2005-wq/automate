@@ -10,7 +10,9 @@ const Checkout = () => {
   React.useEffect(() => {
     import('../api/bookingApi').then(({ getBooking }) => {
       getBooking(bookingId).then(res => {
-        setBooking(res.data || res);
+        // Backend wraps as { success, message, data: { booking, payment } }
+        const bookingData = res?.data?.booking || res?.booking || {};
+        setBooking(bookingData);
         setLoading(false);
       }).catch(err => {
         console.error(err);
@@ -21,11 +23,15 @@ const Checkout = () => {
 
   const handlePayment = (e) => {
     e.preventDefault();
-    // Simulate payment call
+    if (!booking) return;
+    const paymentId = booking.payment?._id || booking.id;
     import('../api/paymentApi').then(({ confirmPayment }) => {
-      confirmPayment({ bookingId, method: 'Card', amount: booking?.totalAmount || 400 })
+      confirmPayment({ paymentId })
         .then(() => navigate(`/booking-confirmation/${bookingId}`))
-        .catch(() => navigate(`/booking-confirmation/${bookingId}`)); // mock success anyway
+        .catch((err) => {
+          const msg = err?.response?.data?.message || "Payment failed.";
+          alert(msg);
+        });
     });
   };
 

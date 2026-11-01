@@ -2,21 +2,27 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const BookingCard = ({ booking }) => {
+  const vehicle = booking.vehicle || {};
   const getStatusColor = (status) => {
     switch(status?.toLowerCase()) {
       case 'confirmed': return '#10b981';
       case 'pending': return '#f59e0b';
       case 'cancelled': return '#ef4444';
       case 'completed': return '#3b82f6';
+      case 'active': return '#3b82f6';
+      case 'rejected': return '#ef4444';
       default: return '#6b7280';
     }
   };
+
+  const pickup = booking.pickupDateTime ? new Date(booking.pickupDateTime).toLocaleDateString() : '-';
+  const dropoff = booking.returnDateTime ? new Date(booking.returnDateTime).toLocaleDateString() : '-';
 
   return (
     <div className="booking-card" style={{ display: 'flex', flexDirection: 'column', md: { flexDirection: 'row' }, border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden', backgroundColor: 'white', marginBottom: '16px' }}>
       <div style={{ padding: '16px', display: 'flex', flexGrow: 1, flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#1f2937' }}>Booking #{booking.id || 'XXXX'}</h3>
+          <h3 style={{ margin: 0, color: '#1f2937' }}>Booking #{booking._id ? booking._id.slice(-6) : 'XXXX'}</h3>
           <span style={{ padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 'bold', color: 'white', backgroundColor: getStatusColor(booking.status) }}>
             {booking.status || 'Pending'}
           </span>
@@ -24,17 +30,17 @@ const BookingCard = ({ booking }) => {
         
         <div style={{ display: 'flex', gap: '16px', color: '#4b5563', fontSize: '14px', marginTop: '8px' }}>
           <div>
-            <strong>Vehicle:</strong> {booking.vehicleName || 'Unknown Vehicle'}
+            <strong>Vehicle:</strong> {`${vehicle.brand || 'Unknown'} ${vehicle.model || 'Vehicle'}`}
           </div>
           <div>
-            <strong>Dates:</strong> {booking.startDate} to {booking.endDate}
+            <strong>Dates:</strong> {pickup} to {dropoff}
           </div>
         </div>
         
         <div style={{ marginTop: 'auto', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f3f4f6' }}>
-          <span style={{ fontWeight: 'bold', color: '#1f2937' }}>Total: ${booking.totalPrice || 0}</span>
-          <Link to={`/bookings/${booking.id}`} style={{ color: '#f59e0b', textDecoration: 'none', fontWeight: '500' }}>
-            View Details
+          <span style={{ fontWeight: 'bold', color: '#1f2937' }}>Total: ${booking.totalAmount || 0}</span>
+          <Link to={`/my-bookings/${booking._id}/invoice`} style={{ color: '#f59e0b', textDecoration: 'none', fontWeight: '500' }}>
+            View Invoice
           </Link>
         </div>
       </div>

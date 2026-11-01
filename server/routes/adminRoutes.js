@@ -10,6 +10,7 @@ import {
 } from '../controllers/adminController.js';
 import { protect } from '../middleware/auth.js';
 import { admin } from '../middleware/admin.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -21,9 +22,9 @@ router.get('/stats', getDashboardStats);
 
 router.route('/vehicles')
   .get(getAllVehicles)
-  .post(createVehicle);
+  .post(upload.array('images'), createVehicle);
 router.route('/vehicles/:id')
-  .put(updateVehicle)
+  .put(upload.array('images'), updateVehicle)
   .delete(deleteVehicle);
 // Fix: was /vehicles/:id/toggle-availability (PUT)
 router.put('/vehicles/:id/toggle-availability', toggleAvailability);

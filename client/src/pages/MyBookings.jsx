@@ -8,10 +8,12 @@ const MyBookings = () => {
   React.useEffect(() => {
     import('../api/bookingApi').then(({ getMyBookings }) => {
       getMyBookings().then(data => {
-        setBookings(data.data || data);
+        const bookings = data?.data?.bookings || [];
+        setBookings(Array.isArray(bookings) ? bookings : []);
         setLoading(false);
       }).catch(err => {
         console.error(err);
+        setBookings([]);
         setLoading(false);
       });
     });
