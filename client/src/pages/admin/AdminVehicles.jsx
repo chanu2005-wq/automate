@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Trash2, Edit2, RefreshCw } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import VehicleCard from "../../components/vehicles/VehicleCard";
 import {
   getAdminVehicles,
@@ -37,7 +37,6 @@ const AdminVehicles = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editId, setEditId] = useState(null);
-  [, setEditIdForce] = useState(null); // force re-render key for edit modal
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [form, setForm] = useState(initialForm);
